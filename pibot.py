@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # PiBot control interface by Henry Plumb (henry@android.net)
 
 import RPIO
@@ -33,32 +32,37 @@ curses.cbreak()
 screen.keypad(True)
 screen.nodelay(1)
 
+forward = False
+
 def collision():
 	time.sleep(0.055)
-	# 10ns trigger pulse
 	RPIO.output(7, True)
 	time.sleep(0.0001)
 	RPIO.output(7, False)
-	# Time returned pulse
 	start = time.time()
-	while RPIO.input(8) == False:
+	while not RPIO.input(8):
 	        start = time.time()
-	while RPIO.input(8) == True:
+	while RPIO.input(8):
 	        stop = time.time()
-	# Calculate distance from pulse length
 	distance = ((stop - start) * 34000) / 2
 	if distance >= 16:
 		return False
 	else:
+		screen.addstr(0, 0, "Emergency Stop! Collision Imminent!")
 		return True
 
 def drive(dir):
+	global forward
 	if dir == "forward":
+		forward = True
 		RPIO.output(28, True)
 		RPIO.output(29, False)
 		RPIO.output(30, False)
 		RPIO.output(31, True)
-	elif dir == "reverse":
+	else:
+		forward = False
+
+	if dir == "reverse":
 		RPIO.output(28, False)
 		RPIO.output(29, True)
 		RPIO.output(30, True)
@@ -78,14 +82,11 @@ def drive(dir):
 		RPIO.output(29, False)
 		RPIO.output(30, False)
 		RPIO.output(31, False)
-	return
 
 def checkkey():
-        if collision() == True:
-		drive("stop")
         char = screen.getch()
         if char == curses.KEY_UP:
-                drive("forward")
+		drive("forward")
         elif char == curses.KEY_DOWN:
                 drive("stop")
         elif char == curses.KEY_LEFT:
@@ -98,6 +99,8 @@ def checkkey():
 try:
 	while True:
 		checkkey()
+		if collision() and forward:
+			drive("stop")
 		screen.refresh()
 except KeyboardInterrupt:
 	# Close curses cleanly
@@ -105,9 +108,7 @@ except KeyboardInterrupt:
 	screen.keypad(0)
 	curses.echo()
 	curses.endwin()
-
 	# Revert all GPIOs to outputs
 	RPIO.cleanup()
-
 	# Stop webcam stream
 	os.system("sudo /home/pi/PiBot/stop_stream.sh")
