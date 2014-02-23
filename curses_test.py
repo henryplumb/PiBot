@@ -59,26 +59,25 @@ def drive(dir):
 		RPIO.output(29, False)
 		RPIO.output(30, False)
 		RPIO.output(31, True)
-	if dir == "reverse":
+	else:
 		forward = False
+
+	if dir == "reverse":
 		RPIO.output(28, False)
 		RPIO.output(29, True)
 		RPIO.output(30, True)
 		RPIO.output(31, False)
 	elif dir == "left":
-		forward = False
 		RPIO.output(28, True)
 		RPIO.output(29, False)
 		RPIO.output(30, True)
 		RPIO.output(31, False)
 	elif dir == "right":
-		forward = False
 		RPIO.output(28, False)
 		RPIO.output(29, True)
 		RPIO.output(30, False)
 		RPIO.output(31, True)
 	elif dir == "stop":
-		forward = False
 		RPIO.output(28, False)
 		RPIO.output(29, False)
 		RPIO.output(30, False)
@@ -100,7 +99,7 @@ def checkkey():
 try:
 	while True:
 		checkkey()
-		if collision() == True and forward == True:
+		if collision() and forward:
 			drive("stop")
 		screen.refresh()
 except KeyboardInterrupt:
