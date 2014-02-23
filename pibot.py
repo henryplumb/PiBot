@@ -51,6 +51,19 @@ def collision():
 		screen.addstr(0, 0, "Emergency Stop! Collision Imminent!")
 		return True
 
+def camera(dir):
+	if dir == "up":
+		pwm.setPWM(0, 0, 650)
+	elif dir == "down":
+		pwm.setPWM(0, 0, 380)
+	elif dir == "left":
+		pwm.setPWM(1, 0, 900)
+	elif dir == "right":
+		pwm.setPWM(1, 0, 250)
+	elif dir == "home":
+		pwm.setPWM(0, 0, 453)
+		pwm.setPWM(1, 0, 465)
+
 def drive(dir):
 	global forward
 	if dir == "forward":
@@ -84,17 +97,27 @@ def drive(dir):
 		RPIO.output(31, False)
 
 def checkkey():
-        char = screen.getch()
-        if char == curses.KEY_UP:
+	char = screen.getch()
+	if char == curses.KEY_UP:
 		drive("forward")
-        elif char == curses.KEY_DOWN:
-                drive("stop")
-        elif char == curses.KEY_LEFT:
-                drive("left")
-        elif char == curses.KEY_RIGHT:
-                drive("right")
-        elif char == ord('r'):
-                drive("reverse")
+	elif char == curses.KEY_DOWN:
+		drive("stop")
+	elif char == curses.KEY_LEFT:
+		drive("left")
+	elif char == curses.KEY_RIGHT:
+		drive("right")
+	elif char == ord('r'):
+		drive("reverse")
+	elif char == ord('w'):
+		camera("up")
+	elif char == ord('z'):
+		camera("down")
+	elif char == ord('a'):
+		camera("left")
+	elif char == ord('d'):
+		camera("right")
+	elif char == ord('s'):
+		camera("home")
 
 try:
 	while True:
