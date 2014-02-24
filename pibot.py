@@ -126,7 +126,6 @@ try:
 		if collision() and forward:
 			drive("stop")
 			curses.flash()
-			curses.beep()
 			screen.addstr(0, 0, "WARNING! Stopped due to obstacle " + str(round(distance, 1)) + "cm ahead!")
 		screen.refresh()
 except KeyboardInterrupt:
