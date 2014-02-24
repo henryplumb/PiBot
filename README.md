@@ -17,7 +17,9 @@ GPIO 7 : INPUT : Echo from HC-SR04
 
 GPIO 8 : OUTPUT : Trigger for HC-SR04
 
+
 GPIO 24 : OUTPUT : Relay control for headlight
+
 
 GPIO 28 : OUTPUT : Motor control 1
 
@@ -27,5 +29,7 @@ GPIO 30 : OUTPUT : Motor control 3
 
 GPIO 31 : OUTPUT : Motor control 4
 
+
 SDA (GPIO 2) : I2C : Servo driver
+
 SDL (GPIO 3) : I2C : Servo driver
