@@ -32,9 +32,11 @@ curses.cbreak()
 screen.keypad(True)
 screen.nodelay(1)
 
+# Variable for ultrasonic forward sensing
 forward = False
 
 def collision():
+	global distance
 	time.sleep(0.055)
 	RPIO.output(7, True)
 	time.sleep(0.0001)
@@ -48,7 +50,6 @@ def collision():
 	if distance >= 16:
 		return False
 	else:
-		screen.addstr(0, 0, "Emergency Stop! Collision Imminent!")
 		return True
 
 def camera(dir):
@@ -74,7 +75,7 @@ def drive(dir):
 		RPIO.output(31, True)
 	else:
 		forward = False
-
+		screen.erase()
 	if dir == "reverse":
 		RPIO.output(28, False)
 		RPIO.output(29, True)
@@ -124,6 +125,9 @@ try:
 		checkkey()
 		if collision() and forward:
 			drive("stop")
+			curses.flash()
+			curses.beep()
+			screen.addstr(0, 0, "WARNING! Stopped due to obstacle " + str(round(distance, 1)) + "cm ahead!")
 		screen.refresh()
 except KeyboardInterrupt:
 	# Close curses cleanly
