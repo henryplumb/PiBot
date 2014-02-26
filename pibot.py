@@ -34,7 +34,7 @@ screen.nodelay(1)
 
 # Variable for ultrasonic forward sensing and headlight
 forward = False
-light = True
+light = False
 
 def collision():
 	global distance
