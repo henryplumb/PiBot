@@ -32,8 +32,9 @@ curses.cbreak()
 screen.keypad(True)
 screen.nodelay(1)
 
-# Variable for ultrasonic forward sensing
+# Variable for ultrasonic forward sensing and headlight
 forward = False
+light = True
 
 def collision():
 	global distance
@@ -51,6 +52,15 @@ def collision():
 		return False
 	else:
 		return True
+		
+def light():
+	global light
+	if light:
+		RPIO.output(24, False)
+		light == False
+	else:
+		RPIO.output(24, True)
+		light == True
 
 def camera(dir):
 	if dir == "up":
