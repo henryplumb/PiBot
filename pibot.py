@@ -129,6 +129,8 @@ def checkkey():
 		camera("right")
 	elif char == ord('s'):
 		camera("home")
+	elif char == ord('l'):
+		light()
 
 try:
 	while True:
