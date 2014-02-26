@@ -13,13 +13,13 @@ os.system("sudo /home/pi/PiBot/start_stream.sh")
 RPIO.setwarnings(False)
 
 # Setup motor outputs
-RPIO.setup(7, RPIO.OUT)
+RPIO.setup(7, RPIO.OUT, initial=False)
 RPIO.setup(8, RPIO.IN)
-RPIO.setup(24, RPIO.OUT)
-RPIO.setup(28, RPIO.OUT)
-RPIO.setup(29, RPIO.OUT)
-RPIO.setup(30, RPIO.OUT)
-RPIO.setup(31, RPIO.OUT)
+RPIO.setup(24, RPIO.OUT, initial=False)
+RPIO.setup(28, RPIO.OUT, initial=False)
+RPIO.setup(29, RPIO.OUT, initial=False)
+RPIO.setup(30, RPIO.OUT, initial=False)
+RPIO.setup(31, RPIO.OUT, initial=False)
 
 # Setup I2C servo driver
 pwm = PWM(0x40, debug=True)
@@ -34,7 +34,7 @@ screen.nodelay(1)
 
 # Variable for ultrasonic forward sensing and headlight
 forward = False
-light = False
+lighton = False
 
 def collision():
 	global distance
@@ -53,15 +53,6 @@ def collision():
 	else:
 		return True
 		
-def light():
-	global light
-	if light:
-		RPIO.output(24, False)
-		light == False
-	else:
-		RPIO.output(24, True)
-		light == True
-
 def camera(dir):
 	if dir == "up":
 		pwm.setPWM(0, 0, 650)
@@ -108,6 +99,7 @@ def drive(dir):
 		RPIO.output(31, False)
 
 def checkkey():
+	global lighton
 	char = screen.getch()
 	if char == curses.KEY_UP:
 		drive("forward")
@@ -130,7 +122,12 @@ def checkkey():
 	elif char == ord('s'):
 		camera("home")
 	elif char == ord('l'):
-		light()
+		if lighton:
+			RPIO.output(24, False)
+			lighton = False
+		else:
+			RPIO.output(24, True)
+			lighton = True
 
 try:
 	while True:
